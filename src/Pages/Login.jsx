@@ -13,11 +13,11 @@ const Login = () => {
   const passwordRef = useRef();
   const navigate = useNavigate();
 
-  useEffect(() => {
-    if (authUser) {
-      navigate("/home");
-    }
-  });
+  // useEffect(() => {
+  //   if (authUser) {
+  //     navigate("/home");
+  //   }
+  // });
 
   const handleLoginSubmit = async (e) => {
     e.preventDefault();
@@ -53,7 +53,7 @@ const Login = () => {
   };
   return (
     <div className="Login_Container  flex justify-center items-center  h-screen  bg-gradient-to-b from-[#fdf6e3] to-[#e7e7e7] ">
-      {toggle ? (
+      {!toggle ? (
         <div className="Login  h-[70%] sm:w-[80%] md:w-[50%] lg:w-[40%]">
           <h1
             className=" text-center text-[2rem] font-medium"

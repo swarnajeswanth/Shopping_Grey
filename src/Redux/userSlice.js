@@ -15,8 +15,11 @@ const userSlice = createSlice({
       // if (match) {
       //   state.authUser = match[1];
     },
+    logout: (state) => {
+      state.authUser = null;
+    },
   },
 });
 
-export const { setUser } = userSlice.actions;
+export const { setUser, logout } = userSlice.actions;
 export default userSlice.reducer;

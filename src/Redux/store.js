@@ -9,19 +9,21 @@ import {
   PURGE,
   REGISTER,
 } from "redux-persist";
-import storage from "redux-persist/lib/storage"; // default is localStorage
+import storage from "redux-persist/lib/storage";
 import userReducer from "./userSlice";
+import productReducer from "./productSlice";
 import { combineReducers } from "redux";
 
 // Configuration for redux-persist
 const persistConfig = {
   key: "root",
   storage,
-  whitelist: ["user"],
+  whitelist: ["user", "product"],
 };
 
 const rootReducer = combineReducers({
   user: userReducer,
+  product: productReducer,
 });
 
 const persistedReducer = persistReducer(persistConfig, rootReducer);
