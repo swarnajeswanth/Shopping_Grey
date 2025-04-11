@@ -1,12 +1,39 @@
-# React + Vite
+# 🛒 Shopping Website
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+A responsive e-commerce web application built with **React**, **Redux**, and **Vite**, using the **Fake Store API**. Users can browse products, filter by category, like items, and manage their cart with a smooth, animated UI experience.
 
-Currently, two official plugins are available:
+## 🔗 Live Demo
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react/README.md) uses [Babel](https://babeljs.io/) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+> _Add GitHub Pages / Netlify / Vercel link here when deployed_
 
-## Expanding the ESLint configuration
+---
 
-If you are developing a production application, we recommend using TypeScript and enable type-aware lint rules. Check out the [TS template](https://github.com/vitejs/vite/tree/main/packages/create-vite/template-react-ts) to integrate TypeScript and [`typescript-eslint`](https://typescript-eslint.io) in your project.
+## 🚀 Features
+
+- 🔍 Browse and filter products by category
+- 🧡 Like/unlike products
+- 🛒 Add, remove, and update cart items
+- 🧾 Checkout interface with total cost
+- 🎨 Smooth animations using GSAP
+- 💾 State persistence with Redux + redux-persist
+- 🧪 Fully responsive design
+
+---
+
+## 🧰 Tech Stack
+
+- **React** + **Redux Toolkit**
+- **Vite** for fast bundling
+- **Tailwind CSS** for styling
+- **GSAP** for animations
+- **Fake Store API** for mock data
+- **redux-persist** for state persistence
+
+---
+
+## 🛠️ Setup Instructions
+
+### 1. Clone the repository
+```bash
+git clone https://github.com/your-username/shopping-website.git
+cd shopping-website
