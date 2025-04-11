@@ -7,6 +7,7 @@ import Loader from "../Component/Loader";
 import Product from "../Component/Product";
 import ProductModal from "../Component/SingleProductModel";
 import gsap from "gsap";
+import toast from "react-hot-toast";
 
 const HomePage = () => {
   const dispatch = useDispatch();
@@ -69,6 +70,7 @@ const HomePage = () => {
       setFilteredProducts(
         products.filter((p) => p.category === selectedCategory)
       );
+      toast.success(`Filtered by category - ${selectedCategory.toUpperCase()}`);
     }
     setShowFiltered(true);
   };
@@ -77,8 +79,7 @@ const HomePage = () => {
     <div>
       <Nav />
 
-      {/* Dropdown and Filter Button */}
-      <div className="flex justify-center items-center gap-4 my-4">
+      <div className="   text-[#1a202c] flex justify-center items-center gap-4 my-4">
         <select
           value={selectedCategory}
           onChange={(e) => setSelectedCategory(e.target.value)}
@@ -87,7 +88,7 @@ const HomePage = () => {
         >
           {categories.map((cat) => (
             <option key={cat} value={cat}>
-              {cat}
+              {cat.toUpperCase()}
             </option>
           ))}
         </select>

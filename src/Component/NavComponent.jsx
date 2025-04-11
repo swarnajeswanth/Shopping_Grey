@@ -7,6 +7,7 @@ import { logout } from "../Redux/userSlice";
 import { useSelector } from "react-redux";
 import gsap from "gsap";
 import { useGSAP } from "@gsap/react";
+import toast from "react-hot-toast";
 const Nav = () => {
   const navigate = useNavigate();
   const dispatch = useDispatch();
@@ -14,6 +15,8 @@ const Nav = () => {
   const cartCount = cart.length;
   const handleLogout = () => {
     dispatch(logout());
+    toast.success("Logout Successful");
+    localStorage.removeItem("token");
     persistor.purge();
     navigate("/");
   };

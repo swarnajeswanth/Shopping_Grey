@@ -11,7 +11,7 @@ const CartPage = () => {
     .toFixed(2);
 
   return (
-    <div style={styles.container}>
+    <div className="bg-[#f0f4f8] text-[#1a202c]" style={styles.container}>
       <h2>🛒 Your Cart</h2>
 
       {cart.length === 0 ? (

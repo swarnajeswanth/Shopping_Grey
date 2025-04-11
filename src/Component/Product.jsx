@@ -3,6 +3,7 @@ import { setCart, toggleLike } from "../Redux/productSlice";
 import { useDispatch, useSelector } from "react-redux";
 import { increaseQuantity, decreaseQuantity } from "../Redux/productSlice";
 import { AiFillHeart, AiOutlineHeart } from "react-icons/ai";
+import toast from "react-hot-toast";
 
 const Product = ({ product, setSelectedProduct, selectedProduct }) => {
   const [showFull, setShowFull] = useState(false);
@@ -18,6 +19,7 @@ const Product = ({ product, setSelectedProduct, selectedProduct }) => {
     console.log("handleaddtocart");
     const { id, title, price, image } = product;
     dispatch(setCart({ id, title, price, image, quantity: 1 }));
+    toast.success("Product Added !.");
   };
   const increaseHandler = () => {
     dispatch(increaseQuantity(product.id));
@@ -28,7 +30,8 @@ const Product = ({ product, setSelectedProduct, selectedProduct }) => {
   };
 
   const { likes } = useSelector((state) => state.product);
-  const isLiked = likes.includes(product.id);
+  const isLiked = Array.isArray(likes) && likes.includes(product.id);
+
   const styles = {
     card: {
       maxWidth: "300px",
@@ -105,7 +108,7 @@ const Product = ({ product, setSelectedProduct, selectedProduct }) => {
     <div
       style={styles.card}
       //
-      className="hover:scale-105"
+      className="hover:scale-105 bg-[#f0f4f8] text-[#1a202c]"
     >
       <div
         onClick={() => dispatch(toggleLike(product.id))}

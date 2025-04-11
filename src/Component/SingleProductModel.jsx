@@ -39,6 +39,7 @@ const ProductModal = ({ product, onClose }) => {
 
   return (
     <div
+      className="bg-[#f0f4f8] text-[#1a202c]"
       style={{
         position: "fixed",
         top: 0,

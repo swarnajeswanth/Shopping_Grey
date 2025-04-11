@@ -4,6 +4,7 @@ import { useNavigate } from "react-router-dom";
 import { useDispatch } from "react-redux";
 import { setUser } from "../Redux/userSlice.js";
 import { useSelector } from "react-redux";
+import { toast } from "react-hot-toast";
 const Login = () => {
   const { authUser } = useSelector((state) => state.user);
   const dispatch = useDispatch();
@@ -21,20 +22,24 @@ const Login = () => {
 
   const handleLoginSubmit = async (e) => {
     e.preventDefault();
-
-    const username = usernameref.current.value;
-    const password = passwordRef.current.value;
-    const response = await axiosInstance.post("auth/login", {
-      username: "mor_2314",
-      password: "83r5^_",
-    });
-    console.log(response);
-    if (response.status === 200) {
-      dispatch(setUser(username));
-      navigate("/home");
+    try {
+      const username = usernameref.current.value;
+      const password = passwordRef.current.value;
+      const response = await axiosInstance.post("auth/login", {
+        username: "mor_2314",
+        password: "83r5^_",
+      });
+      console.log(response);
+      if (response.status === 200) {
+        dispatch(setUser(username));
+        toast.success("Login Successful");
+        localStorage.setItem("token", response.data.token);
+        navigate("/home");
+      }
+    } catch (error) {
+      console.error("Login error:", error);
+      toast.error("Login failed. Please try again.");
     }
-    console.log("username:", username);
-    console.log("Password:", password);
   };
   const handleSignupSubmit = async (e) => {
     e.preventDefault();
