@@ -1,22 +1,40 @@
 import React, { useState, useEffect } from "react";
-import { useSelector } from "react-redux";
-import { useDispatch } from "react-redux";
+import { useSelector, useDispatch } from "react-redux";
 import { setCart } from "../Redux/productSlice";
+import { useNavigate } from "react-router-dom";
+import { AiOutlineClose } from "react-icons/ai";
+
 const ProductModal = ({ product, onClose }) => {
   const [quantity, setQuantity] = useState(1);
+  const dispatch = useDispatch();
+  const navigate = useNavigate();
   const totalPrice = (product.price * quantity).toFixed(2);
   const { cart } = useSelector((state) => state.product);
+
   useEffect(() => {
-    // disable scroll on modal open
     document.body.style.overflow = "hidden";
     return () => (document.body.style.overflow = "auto");
   }, []);
-  let ProductModal = () => {
-    const { id, title, price, image } = product;
 
-    const cartItem = cart.map(
-      (item) => item.id === id && (item.quantity = quantity)
-    );
+  const handleAddToCart = () => {
+    const { id, title, price, image } = product;
+    const existing = cart.find((item) => item.id === id);
+
+    if (existing) {
+      dispatch(
+        setCart({
+          id,
+          title,
+          price,
+          image,
+          quantity: existing.quantity + quantity,
+        })
+      );
+    } else {
+      dispatch(setCart({ id, title, price, image, quantity }));
+    }
+
+    onClose();
   };
 
   return (
@@ -40,9 +58,28 @@ const ProductModal = ({ product, onClose }) => {
           padding: "20px",
           boxShadow: "2px 0 10px rgba(0,0,0,0.3)",
           overflowY: "auto",
+          position: "relative",
         }}
         onClick={(e) => e.stopPropagation()}
       >
+        {/* Close Icon */}
+        <button
+          onClick={onClose}
+          style={{
+            position: "absolute",
+            top: "10px",
+            right: "10px",
+            background: "none",
+            border: "none",
+            cursor: "pointer",
+            fontSize: "1.4rem",
+            color: "#999",
+          }}
+          aria-label="Close"
+        >
+          <AiOutlineClose />
+        </button>
+
         <h2 style={{ fontSize: "1.5rem", marginBottom: "1rem" }}>
           {product.title}
         </h2>
@@ -76,7 +113,7 @@ const ProductModal = ({ product, onClose }) => {
 
         <div style={{ marginTop: "2rem", display: "flex", gap: "10px" }}>
           <button
-            onClick={ProductModal}
+            onClick={handleAddToCart}
             style={{
               flex: 1,
               padding: "10px",
@@ -90,6 +127,10 @@ const ProductModal = ({ product, onClose }) => {
             Add to Cart
           </button>
           <button
+            onClick={() => {
+              navigate("/checkout");
+              onClose();
+            }}
             style={{
               flex: 1,
               padding: "10px",
@@ -103,23 +144,6 @@ const ProductModal = ({ product, onClose }) => {
             Checkout
           </button>
         </div>
-
-        <button
-          onClick={onClose}
-          style={{
-            marginTop: "1.5rem",
-            display: "block",
-            textAlign: "center",
-            color: "#999",
-            fontSize: "0.9rem",
-            textDecoration: "underline",
-            background: "none",
-            border: "none",
-            cursor: "pointer",
-          }}
-        >
-          Close
-        </button>
       </div>
     </div>
   );

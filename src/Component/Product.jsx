@@ -1,19 +1,34 @@
-import React, { useState } from "react";
-import { setCart } from "../Redux/productSlice";
-import { useDispatch } from "react-redux";
+import React, { useEffect, useState } from "react";
+import { setCart, toggleLike } from "../Redux/productSlice";
+import { useDispatch, useSelector } from "react-redux";
+import { increaseQuantity, decreaseQuantity } from "../Redux/productSlice";
+import { AiFillHeart, AiOutlineHeart } from "react-icons/ai";
+
 const Product = ({ product, setSelectedProduct, selectedProduct }) => {
   const [showFull, setShowFull] = useState(false);
   const dispatch = useDispatch();
-  const [addToCart, setAddToCart] = useState(false);
+  const cart = useSelector((state) => state.product.cart);
+  const isInCart = useSelector((state) =>
+    state.product.cart.some((item) => item.id === product.id)
+  );
   const toggleShow = () => setShowFull((prev) => !prev);
   const descriptionPreview = product.description.slice(0, 100);
+
   const handleAddToCart = () => {
     console.log("handleaddtocart");
     const { id, title, price, image } = product;
     dispatch(setCart({ id, title, price, image, quantity: 1 }));
-    setAddToCart(true);
+  };
+  const increaseHandler = () => {
+    dispatch(increaseQuantity(product.id));
   };
 
+  const decreaseHandler = () => {
+    dispatch(decreaseQuantity(product.id));
+  };
+
+  const { likes } = useSelector((state) => state.product);
+  const isLiked = likes.includes(product.id);
   const styles = {
     card: {
       maxWidth: "300px",
@@ -92,7 +107,18 @@ const Product = ({ product, setSelectedProduct, selectedProduct }) => {
       //
       className="hover:scale-105"
     >
-      <span style={styles.heart}>❤️</span>
+      <div
+        onClick={() => dispatch(toggleLike(product.id))}
+        style={{
+          ...styles.heart,
+          backgroundColor: isLiked ? "#fee2e2" : "transparent", // light red if liked
+          borderRadius: "50%",
+          padding: "4px",
+        }}
+      >
+        {isLiked ? <AiFillHeart color="#dc2626" /> : <AiOutlineHeart />}
+      </div>
+
       <img
         onClick={() => setSelectedProduct(product)}
         src={product.image}
@@ -114,20 +140,55 @@ const Product = ({ product, setSelectedProduct, selectedProduct }) => {
           <b>Category:</b> {product.category}
         </span>
         <span>
-          <b>Rating:</b> ⭐ {product.rating?.rate} ({product.rating?.count})
+          <b>Rating:</b> {product.rating?.rate} ({product.rating?.count})
         </span>
       </div>
       <div style={styles.bottom}>
         <span style={styles.price}>${product.price}</span>
-        <button
-          disabled={addToCart}
-          onClick={handleAddToCart}
-          style={styles.button}
-          onMouseOver={(e) => (e.target.style.backgroundColor = "#15803d")}
-          onMouseOut={(e) => (e.target.style.backgroundColor = "#16a34a")}
-        >
-          Add to Cart
-        </button>
+
+        {isInCart ? (
+          <div style={{ display: "flex", alignItems: "center", gap: "0.5rem" }}>
+            <button
+              onClick={() => decreaseHandler()}
+              style={{
+                ...styles.button,
+                padding: "4px 10px",
+                backgroundColor: "#d1d5db",
+                color: "#000",
+              }}
+            >
+              -
+            </button>
+            <span
+              style={{
+                fontSize: "0.8rem",
+                minWidth: "20px",
+                textAlign: "center",
+              }}
+            >
+              {cart.find((item) => item.id === product.id)?.quantity}
+            </span>
+            <button
+              onClick={() => increaseHandler()}
+              style={{
+                ...styles.button,
+                padding: "4px 10px",
+                backgroundColor: "#16a34a",
+              }}
+            >
+              +
+            </button>
+          </div>
+        ) : (
+          <button
+            onClick={handleAddToCart}
+            style={styles.button}
+            onMouseOver={(e) => (e.target.style.backgroundColor = "#15803d")}
+            onMouseOut={(e) => (e.target.style.backgroundColor = "#16a34a")}
+          >
+            Add to Cart
+          </button>
+        )}
       </div>
     </div>
   );

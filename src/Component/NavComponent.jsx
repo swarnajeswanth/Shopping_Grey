@@ -1,18 +1,30 @@
-import React from "react";
+import React, { useEffect } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { FaShoppingCart } from "react-icons/fa";
 import { persistor } from "../Redux/store";
 import { useDispatch } from "react-redux";
 import { logout } from "../Redux/userSlice";
-const Nav = ({ cartCount = 2 }) => {
+import { useSelector } from "react-redux";
+import gsap from "gsap";
+import { useGSAP } from "@gsap/react";
+const Nav = () => {
   const navigate = useNavigate();
   const dispatch = useDispatch();
+  const { cart } = useSelector((state) => state.product);
+  const cartCount = cart.length;
   const handleLogout = () => {
     dispatch(logout());
     persistor.purge();
     navigate("/");
   };
-
+  useGSAP(() => {
+    gsap.from("nav", {
+      opacity: 0,
+      duration: 1,
+      y: -20,
+      ease: "power2.out",
+    });
+  });
   return (
     <nav
       className="bg-white w-screen shadow-md flex justify-between items-center sticky top-0 z-50"
@@ -24,7 +36,10 @@ const Nav = ({ cartCount = 2 }) => {
       </Link>
 
       <div className="flex items-center gap-6 ">
-        <Link to="/" className="text-gray-700 hover:text-blue-600 transition">
+        <Link
+          to="/home"
+          className="text-gray-700 hover:text-blue-600 transition"
+        >
           Home
         </Link>
         <Link
@@ -34,7 +49,7 @@ const Nav = ({ cartCount = 2 }) => {
           Products
         </Link>
         <Link
-          to="/cart"
+          to="/checkout"
           className="relative text-gray-700 hover:text-blue-600 transition"
         >
           <FaShoppingCart size={20} />
