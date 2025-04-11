@@ -1,145 +1,131 @@
-import React, { useState, useEffect } from "react";
-import { useSelector } from "react-redux";
-import { AiOutlineCloseCircle } from "react-icons/ai";
-import { useDispatch } from "react-redux";
-import { removeFromCart } from "../Redux/productSlice";
-import { AiOutlineArrowLeft } from "react-icons/ai";
+import React, { useState, useRef } from "react";
+import { useSelector, useDispatch } from "react-redux";
+import { AiOutlineCloseCircle, AiOutlineArrowLeft } from "react-icons/ai";
 import { useNavigate } from "react-router-dom";
+import { removeFromCart } from "../Redux/productSlice";
+import gsap from "gsap";
+import { useGSAP } from "@gsap/react";
+import "../Component/ResponsiveContainer.css";
+gsap.registerPlugin(useGSAP);
 
 export default function CheckoutPage() {
-  const styles = {
-    container: {
-      maxWidth: "800px",
-      padding: "0.5rem",
-      border: "1px solid #ddd",
-      borderRadius: "8px",
-      backgroundColor: "#f9f9f9",
-      fontFamily: "sans-serif",
-    },
-    section: {
-      marginBottom: "0.5rem",
-    },
-    label: {
-      fontWeight: "bold",
-      display: "block",
-      marginBottom: "0.25rem",
-    },
-    input: {
-      width: "100%",
-      padding: "0.5rem",
-      marginBottom: "1rem",
-      borderRadius: "4px",
-      border: "1px solid #ccc",
-    },
-    productCard: {
-      display: "flex",
-      justifyContent: "space-between",
-      alignItems: "center",
-      padding: "0.5rem",
-      backgroundColor: "#fff",
-      borderRadius: "6px",
-      boxShadow: "0 0 4px rgba(0,0,0,0.1)",
-      marginBottom: "0.5rem",
-    },
-    button: {
-      padding: "0.75rem 1rem",
-      backgroundColor: "#16a34a",
-      color: "white",
-      border: "none",
-      borderRadius: "6px",
-      cursor: "pointer",
-      fontWeight: "bold",
-      fontSize: "0.8rem",
-    },
-  };
   const dispatch = useDispatch();
-  const [hoveredItemId, setHoveredItemId] = useState(null);
-  const { cart } = useSelector((state) => state.product);
   const navigate = useNavigate();
+  const { cart } = useSelector((state) => state.product);
+  const containerRef = useRef();
+  const shippingRef = useRef();
+  const summaryRef = useRef();
 
-  const [isMouseOver, setIsMouseOver] = useState(false);
   const total = cart
     ?.reduce((acc, item) => acc + item.quantity * item.price, 0)
     .toFixed(2);
-  useEffect(() => {
-    console.log("cart", cart);
-  }, [cart]);
+
+  useGSAP(() => {
+    gsap.fromTo(
+      containerRef.current,
+      { scale: 0.8, opacity: 0 },
+      { scale: 1, opacity: 1, duration: 0.6, ease: "power2.out" }
+    );
+
+    gsap.from(shippingRef.current, {
+      x: -40,
+      opacity: 0,
+      duration: 0.6,
+      delay: 0.3,
+      ease: "power2.out",
+    });
+
+    gsap.from(summaryRef.current, {
+      x: 40,
+      opacity: 0,
+      duration: 0.6,
+      delay: 0.4,
+      ease: "power2.out",
+    });
+  }, []);
+
   return (
-    <div style={styles.container}>
-      <h2
-        className="text-2xl border rounded-lg w-fit  font-bold"
-        style={{ padding: "0.25rem" }}
-      >
+    <div
+      ref={containerRef}
+      className="responsive-container border border-gray-300 rounded bg-gray-100 font-sans"
+      style={{ padding: "1rem" }}
+    >
+      <h2 className="text-xl font-bold border rounded w-fit px-2 py-1 mb-4">
         Checkout
       </h2>
+
       <div
         onClick={() => navigate(-1)}
-        style={{
-          position: "sticky",
-          top: 0,
-          zIndex: 999,
-          backgroundColor: "#f9f9f9",
-          padding: "0.5rem",
-          display: "flex",
-          alignItems: "center",
-          gap: "8px",
-          cursor: "pointer",
-          color: "#1d4ed8",
-          fontWeight: "bold",
-          borderBottom: "1px solid #ddd",
-        }}
+        className="sticky top-0 z-50 bg-gray-100 p-2 flex items-center gap-2 text-blue-600 font-bold border-b border-gray-300 cursor-pointer"
       >
         <AiOutlineArrowLeft />
         Back
       </div>
 
-      <div style={styles.section}>
-        <h3 className="text-2xl text-center font-bold"> Shipping Details</h3>
-        <label style={styles.label}>Full Name</label>
-        <input style={styles.input} type="text" placeholder="John Doe" />
-        <label style={styles.label}>Address</label>
-        <input style={styles.input} type="text" placeholder="123 Main Street" />
-        <label style={styles.label}>City</label>
-        <input style={styles.input} type="text" placeholder="City" />
-        <label style={styles.label}>Zip Code</label>
-        <input style={styles.input} type="text" placeholder="123456" />
-      </div>
-
-      <div style={styles.section}>
-        <h3>Order Summary</h3>
-        {cart?.map((item) => (
-          <div key={item.id} style={styles.productCard}>
-            <span style={{ flexGrow: 1, fontSize: "0.8rem" }}>
-              {item.title} x {item.quantity}
-            </span>
-
-            <p
-              style={{
-                cursor: "pointer",
-                display: "flex",
-                justifyContent: "center",
-                alignItems: "center",
-                width: "25px",
-              }}
-            >
-              {(hoveredItemId === item.id || true) && ( // `true` here shows icon always
-                <AiOutlineCloseCircle
-                  onClick={() => dispatch(removeFromCart(item))}
-                  style={{ color: "red" }}
-                />
-              )}
-            </p>
-
-            <span>${(item.quantity * item.price).toFixed(2)}</span>
-          </div>
-        ))}
-
-        <div style={{ textAlign: "right", fontWeight: "bold" }}>
-          Total: ${total}
+      {/* Shipping Details */}
+      <div ref={shippingRef} className="mt-4 space-y-2">
+        <h3 className="text-lg font-bold text-center">Shipping Details</h3>
+        <div>
+          <label className="font-semibold block mb-1">Full Name</label>
+          <input
+            type="text"
+            placeholder="John Doe"
+            className="w-full p-2 rounded border border-gray-300"
+          />
+        </div>
+        <div>
+          <label className="font-semibold block mb-1">Address</label>
+          <input
+            type="text"
+            placeholder="123 Main Street"
+            className="w-full p-2 rounded border border-gray-300"
+          />
+        </div>
+        <div>
+          <label className="font-semibold block mb-1">City</label>
+          <input
+            type="text"
+            placeholder="City"
+            className="w-full p-2 rounded border border-gray-300"
+          />
+        </div>
+        <div>
+          <label className="font-semibold block mb-1">Zip Code</label>
+          <input
+            type="text"
+            placeholder="123456"
+            className="w-full p-2 rounded border border-gray-300"
+          />
         </div>
       </div>
 
-      <button style={styles.button}>Place Order</button>
+      {/* Order Summary */}
+      <div ref={summaryRef} className="mt-6">
+        <h3 className="text-lg font-bold mb-2">Order Summary</h3>
+        {cart?.map((item) => (
+          <div
+            key={item.id}
+            className="flex justify-between items-center bg-white rounded shadow p-2 mb-2"
+          >
+            <span className="flex-grow text-sm">
+              {item.title} x {item.quantity}
+            </span>
+            <AiOutlineCloseCircle
+              onClick={() => dispatch(removeFromCart(item))}
+              className="text-red-500 cursor-pointer"
+              size={18}
+            />
+            <span className="ml-2 text-sm font-semibold">
+              ${(item.quantity * item.price).toFixed(2)}
+            </span>
+          </div>
+        ))}
+        <div className="text-right font-bold mt-2">Total: ${total}</div>
+      </div>
+
+      <button className="mt-4 w-full bg-green-600 text-white font-bold py-2 px-4 rounded hover:bg-green-700 transition">
+        Place Order
+      </button>
     </div>
   );
 }

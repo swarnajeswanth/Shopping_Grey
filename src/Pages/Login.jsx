@@ -13,11 +13,11 @@ const Login = () => {
   const passwordRef = useRef();
   const navigate = useNavigate();
 
-  // useEffect(() => {
-  //   if (authUser) {
-  //     navigate("/home");
-  //   }
-  // });
+  useEffect(() => {
+    if (authUser) {
+      navigate("/home");
+    }
+  });
 
   const handleLoginSubmit = async (e) => {
     e.preventDefault();
@@ -46,7 +46,7 @@ const Login = () => {
       email,
       password,
     });
-    console.log(response.data);
+    console.log(response.data.token);
     console.log("Email:", email);
     console.log("username:", username);
     console.log("Password:", password);

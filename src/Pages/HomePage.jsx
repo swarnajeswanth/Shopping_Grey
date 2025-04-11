@@ -13,6 +13,10 @@ const HomePage = () => {
   const [selectedProduct, setSelectedProduct] = useState(null);
   const [loading, setLoading] = useState(true);
   const { products } = useSelector((state) => state.product);
+  const [filteredProducts, setFilteredProducts] = useState([]);
+  const [categories, setCategories] = useState([]);
+  const [selectedCategory, setSelectedCategory] = useState("All");
+  const [showFiltered, setShowFiltered] = useState(false);
 
   const gridRef = useRef(null);
 
@@ -20,7 +24,15 @@ const HomePage = () => {
     axiosInstance
       .get("/products")
       .then((response) => {
-        dispatch(setProducts(response.data));
+        const data = response.data;
+        dispatch(setProducts(data));
+        setFilteredProducts(data);
+        setShowFiltered(true);
+        const uniqueCategories = [
+          "All",
+          ...new Set(data.map((p) => p.category)),
+        ];
+        setCategories(uniqueCategories);
         setLoading(false);
       })
       .catch((error) => {
@@ -30,7 +42,7 @@ const HomePage = () => {
   }, []);
 
   useEffect(() => {
-    if (!loading && gridRef.current) {
+    if (!loading && gridRef.current && showFiltered) {
       gsap.fromTo(
         gridRef.current.children,
         {
@@ -48,12 +60,47 @@ const HomePage = () => {
         }
       );
     }
-  }, [loading, products]);
+  }, [loading, filteredProducts, showFiltered]);
+
+  const handleFilter = () => {
+    if (selectedCategory === "All") {
+      setFilteredProducts(products);
+    } else {
+      setFilteredProducts(
+        products.filter((p) => p.category === selectedCategory)
+      );
+    }
+    setShowFiltered(true);
+  };
 
   return (
     <div>
       <Nav />
 
+      {/* Dropdown and Filter Button */}
+      <div className="flex justify-center items-center gap-4 my-4">
+        <select
+          value={selectedCategory}
+          onChange={(e) => setSelectedCategory(e.target.value)}
+          className="h-fit rounded shadow-sm"
+          style={{ padding: "0.5rem 1rem" }}
+        >
+          {categories.map((cat) => (
+            <option key={cat} value={cat}>
+              {cat}
+            </option>
+          ))}
+        </select>
+        <button
+          onClick={handleFilter}
+          style={{ padding: "0.5rem 1rem", margin: "1rem 0" }}
+          className="bg-blue-600 text-white  rounded hover:bg-blue-700 transition"
+        >
+          Filter
+        </button>
+      </div>
+
+      {/* Product Grid */}
       <div
         ref={gridRef}
         className="flex flex-wrap gap-[1rem] justify-center w-screen h-fit"
@@ -61,16 +108,20 @@ const HomePage = () => {
       >
         {loading ? (
           <Loader />
-        ) : (
-          products.map((product) => (
-            <Product
-              key={product.id}
-              product={product}
-              selectedProduct={selectedProduct}
-              setSelectedProduct={setSelectedProduct}
-            />
-          ))
-        )}
+        ) : showFiltered ? (
+          filteredProducts.length > 0 ? (
+            filteredProducts.map((product) => (
+              <Product
+                key={product.id}
+                product={product}
+                selectedProduct={selectedProduct}
+                setSelectedProduct={setSelectedProduct}
+              />
+            ))
+          ) : (
+            <p className="text-center text-gray-500 mt-4">No products found.</p>
+          )
+        ) : null}
       </div>
 
       {selectedProduct && (
