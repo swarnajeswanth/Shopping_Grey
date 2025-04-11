@@ -4,7 +4,13 @@ A responsive e-commerce web application built with **React**, **Redux**, and **V
 
 ## 🔗 Live Demo
 
-> _Add GitHub Pages / Netlify / Vercel link here when deployed_
+> [_Add GitHub Pages / Netlify / Vercel link here when deployed_](https://greyshoppify.netlify.app/)
+
+## SnapShot
+
+![image](https://github.com/user-attachments/assets/f3e8cebc-0cfa-4993-a7c1-781c3fbd957b)
+
+![image](https://github.com/user-attachments/assets/8f797495-88d0-4934-a409-ab871a497008)
 
 ---
 
